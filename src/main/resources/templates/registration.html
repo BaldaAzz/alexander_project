@@ -2,23 +2,48 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
 </head>
-<body>
-
-<section>
-    <form th:action="@{/registration}" method="post">
-        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
-        <h2>Регистрация</h2>
-        <input type="text" placeholder="Почта" name="email">
-        <input type="password" placeholder="Пароль" name="password">
-        <input type="password" placeholder="Повторите пароль" name="confirmed password">
-        <button type="submit">Зарегестрироваться</button>
-        <p>
-            <a th:href="@{/login}">Уже есть аккаунт?</a>
-        </p>
-    </form>
-</section>
-
+<body class="d-flex align-items-center justify-content-center" style="min-height: 100vh; background-color: #f5f5f5;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h2 class="text-center mb-4">Регистрация</h2>
+                        
+                        <!-- Сообщение об ошибке -->
+                        <div th:if="${errorMessage}" class="alert alert-danger">
+                            <span th:text="${errorMessage}"></span>
+                        </div>
+                        
+                        <form th:action="@{/registration}" method="post">
+                            <!-- CSRF-защита отключена -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Введите email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Пароль</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Введите пароль" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                            </div>
+                            <div class="text-center mt-3">
+                                <a th:href="@{/login}" class="text-decoration-none">Уже есть аккаунт? Войти</a>
+                            </div>
+                            <div class="text-center mt-2">
+                                <a th:href="@{/}" class="text-decoration-none">Вернуться на главную</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

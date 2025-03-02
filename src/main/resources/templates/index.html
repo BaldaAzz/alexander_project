@@ -8,7 +8,7 @@
     <link rel="stylesheet" th:href="@{/styles/media.css}" />
     <link
       rel="shortcut icon"
-      href="./pages/Dashboard/assets/favicon.svg"
+      th:href="@{/images/favicon.svg}"
       type="image/x-icon"
     />
     <script src="https://unpkg.com/feather-icons"></script>
@@ -23,9 +23,8 @@
 
         <div class="buttons">
           <a href="#contact" class="button contact">Contact</a>
-          <a th:href="@{/registration}" class="button get-started"
-            >Registration</a
-          >
+          <a th:href="@{/registration}" class="button get-started">Registration</a>
+          <a th:href="@{/login}" class="button get-started">Login</a>
         </div>
         
         <div class="mobile-menu">
@@ -52,13 +51,20 @@
             <div class="menu-open">
               <div class="menu-items">
                 <ul>
-                  <li><a href="./index.html" onclick="Menu.close()">Home</a></li>
+                  <li><a th:href="@{/}" onclick="Menu.close()">Home</a></li>
                   <li><a href="#contact" onclick="Menu.close()">Contact</a></li>
                   <li>
                     <a
-                      href="./pages/Dashboard/dashboard.html"
+                      th:href="@{/registration}"
                       onclick="Menu.close()"
-                      >Get Started</a
+                      >Registration</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      th:href="@{/login}"
+                      onclick="Menu.close()"
+                      >Login</a
                     >
                   </li>
                 </ul>
@@ -75,9 +81,7 @@
             A smart, easy-to-use app that allows you to track your in-and-out
             money.
           </p>
-          <a href="./pages/Dashboard/dashboard.html" class="button get-started"
-            >Go to Dashboard</a
-          >
+          <a th:href="@{/login}" class="button get-started">Go to Dashboard</a>
         </div>
 
         <div class="header-content-right">
@@ -90,7 +94,7 @@
     <main id="preview">
       <section class="app-preview container">
         <div class="app-preview-left">
-          <img src="./images/laptop_preview.svg" alt="App image" />
+          <img th:src="@{/images/laptop_preview.svg}" alt="App image" />
         </div>
 
         <div class="app-preview-right">
@@ -100,9 +104,7 @@
             and update your Incomes and expenses.
           </p>
           <div class="get-started-line">
-            <a href="./pages/Dashboard/dashboard.html" class="get-started"
-              >Get Started</a
-            >
+            <a th:href="@{/login}" class="get-started">Get Started</a>
             <div class="green-line"></div>
           </div>
         </div>
@@ -117,9 +119,7 @@
             expenses everyday, All for free.
           </p>
           <div class="get-started-line">
-            <a href="./pages/Dashboard/dashboard.html" class="get-started"
-              >Get Started</a
-            >
+            <a th:href="@{/login}" class="get-started">Get Started</a>
             <div class="green-line"></div>
           </div>
         </div>

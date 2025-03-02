@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои счета</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Боковая панель навигации -->
+            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+            
+            <!-- Основной контент -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Мои счета</h1>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+                        <i class="fas fa-plus me-1"></i> Добавить счет
+                    </button>
+                </div>
+                
+                <!-- Сообщения об успехе или ошибке -->
+                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${successMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                
+                <!-- Список счетов -->
+                <div class="row mt-4">
+                    <div th:each="account : ${accounts}" class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${account.name}">Название счета</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    Баланс: <span th:text="${#numbers.formatDecimal(account.balance, 1, 'WHITESPACE', 2, 'POINT')}">0.00</span> руб.
+                                </h6>
+                                <div class="d-flex justify-content-between mt-3">
+                                    <a th:href="@{'/accounts/' + ${account.id}}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-info-circle me-1"></i> Детали
+                                    </a>
+                                    <form th:action="@{'/accounts/delete/' + ${account.id}}" method="post" 
+                                          onsubmit="return confirm('Вы уверены, что хотите удалить этот счет? Все связанные транзакции также будут удалены.')">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash me-1"></i> Удалить
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Если счетов нет -->
+                    <div th:if="${#lists.isEmpty(accounts)}" class="col-12 text-center mt-5">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> У вас пока нет счетов. Создайте свой первый счет!
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для добавления счета -->
+    <div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAccountModalLabel">Добавить новый счет</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/accounts/create}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="accountName" class="form-label">Название счета</label>
+                            <input type="text" class="form-control" id="accountName" name="name" required>
+                            <div class="form-text">Введите название для вашего нового счета</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Создать счет</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html> 

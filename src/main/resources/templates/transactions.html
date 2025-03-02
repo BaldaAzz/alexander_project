@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои транзакции</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Боковая панель навигации -->
+            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+            
+            <!-- Основной контент -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Мои транзакции</h1>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
+                        <i class="fas fa-plus me-1"></i> Добавить транзакцию
+                    </button>
+                </div>
+                
+                <!-- Сообщения об успехе или ошибке -->
+                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${successMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                
+                <!-- Список транзакций -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Дата</th>
+                                        <th>Описание</th>
+                                        <th>Счет</th>
+                                        <th>Сумма</th>
+                                        <th>Тип</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="transaction : ${transactions}">
+                                        <td th:text="${#temporals.format(transaction.date, 'dd.MM.yyyy HH:mm')}">01.01.2023</td>
+                                        <td th:text="${transaction.description}">Описание транзакции</td>
+                                        <td>
+                                            <a th:href="@{'/accounts/' + ${transaction.account.id}}" 
+                                               th:text="${transaction.account.name}">Название счета</a>
+                                        </td>
+                                        <td th:text="${#numbers.formatDecimal(transaction.absoluteAmount, 1, 'WHITESPACE', 2, 'POINT') + ' руб.'}">100.00 руб.</td>
+                                        <td>
+                                            <span th:if="${transaction.income}" class="badge bg-success">Доход</span>
+                                            <span th:if="${transaction.expense}" class="badge bg-danger">Расход</span>
+                                            <span th:if="${!transaction.income && !transaction.expense}" class="badge bg-secondary">Другое</span>
+                                        </td>
+                                        <td>
+                                            <form th:action="@{'/transactions/delete/' + ${transaction.id}}" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                        onclick="return confirm('Вы уверены, что хотите удалить эту транзакцию?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <!-- Если транзакций нет -->
+                                    <tr th:if="${#lists.isEmpty(transactions)}">
+                                        <td colspan="6" class="text-center">Транзакции отсутствуют</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для добавления транзакции -->
+    <div class="modal fade" id="addTransactionModal" tabindex="-1" aria-labelledby="addTransactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTransactionModalLabel">Добавить новую транзакцию</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/transactions/add}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Описание</label>
+                            <input type="text" class="form-control" id="description" name="description" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Сумма (руб.)</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="amount" name="amount" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="accountId" class="form-label">Счет</label>
+                            <select class="form-select" id="accountId" name="accountId">
+                                <option th:each="account : ${accounts}" 
+                                        th:value="${account.id}" 
+                                        th:text="${account.name}">Название счета</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Тип транзакции</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="isExpense" id="incomeType" value="false" checked>
+                                <label class="form-check-label" for="incomeType">
+                                    Доход
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="isExpense" id="expenseType" value="true">
+                                <label class="form-check-label" for="expenseType">
+                                    Расход
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Дата</label>
+                            <input type="date" class="form-control" id="date" name="date" required 
+                                   th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html> 

@@ -2,20 +2,58 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Авторизация</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
 </head>
-<body>
-    <section>
-        <form th:action="@{/login}" method="post">
-            <input type="hidden" name="_csrf" th:value="${_csrf.token}">
-            <h2 >Авторизация</h2>
-            <input type="text" placeholder="Почта" name="username">
-            <input type="password" placeholder="Пароль" name="password">
-            <button type="submit">Войти</button>
-            <p>
-                <a th:href="@{/registration}">Нет аккаунта?</a>
-            </p>
-        </form>
-    </section>
+<body class="d-flex align-items-center justify-content-center" style="min-height: 100vh; background-color: #f5f5f5;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h2 class="text-center mb-4">Авторизация</h2>
+                        
+                        <!-- Сообщение об ошибке -->
+                        <div th:if="${param.error}" class="alert alert-danger">
+                            Неверный логин или пароль
+                        </div>
+                        
+                        <!-- Сообщение об успешном выходе -->
+                        <div th:if="${param.logout}" class="alert alert-success">
+                            Вы успешно вышли из системы
+                        </div>
+                        
+                        <!-- Сообщение об успешной регистрации -->
+                        <div th:if="${successMessage}" class="alert alert-success">
+                            <span th:text="${successMessage}"></span>
+                        </div>
+                        
+                        <form th:action="@{/login}" method="post">
+                            <!-- CSRF-защита отключена, поэтому тег удален -->
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Email</label>
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Введите email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Пароль</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Введите пароль" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Войти</button>
+                            </div>
+                            <div class="text-center mt-3">
+                                <a th:href="@{/registration}" class="text-decoration-none">Нет аккаунта? Зарегистрируйтесь</a>
+                            </div>
+                            <div class="text-center mt-2">
+                                <a th:href="@{/}" class="text-decoration-none">Вернуться на главную</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
