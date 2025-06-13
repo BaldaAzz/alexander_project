@@ -21,6 +21,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -92,7 +93,12 @@ public class ThymeleafConfig implements WebMvcConfigurer {
             
             @Override
             public Set<String> getAllExpressionObjectNames() {
-                return Set.of("request", "session", "servletContext", "response");
+                Set<String> names = new HashSet<>();
+                names.add("request");
+                names.add("session");
+                names.add("servletContext");
+                names.add("response");
+                return Collections.unmodifiableSet(names);
             }
             
             @Override

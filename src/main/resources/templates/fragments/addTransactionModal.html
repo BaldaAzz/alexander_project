@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="modal">
+    <!-- Add Transaction Modal -->
+    <div class="modal fade" id="addTransactionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить транзакцию</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTransactionForm" th:action="@{/transactions/add}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Тип транзакции</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="isExpense" id="expense" value="true" checked>
+                                <label class="btn btn-outline-danger" for="expense">Расход</label>
+                                
+                                <input type="radio" class="btn-check" name="isExpense" id="income" value="false">
+                                <label class="btn btn-outline-success" for="income">Доход</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Сумма</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="amount" step="0.01" required min="0.01">
+                                <!-- Валюта пользователя будет отображаться динамически -->
+                                <span class="input-group-text" th:text="${user.currency}"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Категория</label>
+                            <select class="form-select" name="categoryId" required>
+                                <option value="">Выберите категорию</option>
+                                <option th:each="category : ${categories}"
+                                        th:value="${category.id}"
+                                        th:text="${category.name}">Категория</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Счет</label>
+                            <select class="form-select" name="accountId" required>
+                                <option value="">Выберите счет</option>
+                                <option th:each="account : ${accounts}"
+                                        th:value="${account.id}"
+                                        th:text="${account.name}">Счет</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Описание</label>
+                            <textarea class="form-control" name="description" rows="3" placeholder="Введите описание транзакции"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Дата</label>
+                            <input type="datetime-local" class="form-control" name="date" th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd''T''HH:mm')}" required>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="isRecurring" name="isRecurring" value="true">
+                                <label class="form-check-label" for="isRecurring">Повторяющаяся транзакция</label>
+                            </div>
+                        </div>
+                        <div class="mb-3" id="recurrenceOptions" style="display: none;">
+                            <label for="recurrenceType" class="form-label">Периодичность</label>
+                            <select class="form-select" id="recurrenceType" name="recurrenceType">
+                                <option value="DAILY">Ежедневно</option>
+                                <option value="WEEKLY">Еженедельно</option>
+                                <option value="MONTHLY">Ежемесячно</option>
+                                <option value="YEARLY">Ежегодно</option>
+                            </select>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Сохранить
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html> 

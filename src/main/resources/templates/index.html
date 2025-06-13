@@ -1,220 +1,372 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" th:href="@{/styles/styles.css}" />
-    <link rel="stylesheet" th:href="@{/styles/media.css}" />
-    <link
-      rel="shortcut icon"
-      th:href="@{/images/favicon.svg}"
-      type="image/x-icon"
-    />
-    <script src="https://unpkg.com/feather-icons"></script>
-    <title>Monances App</title>
-  </head>
-  <body>
-    <header class="container">
-      <nav>
-        <div class="logo">
-          <p>monances</p>
-        </div>
-
-        <div class="buttons">
-          <a href="#contact" class="button contact">Contact</a>
-          <a th:href="@{/registration}" class="button get-started">Registration</a>
-          <a th:href="@{/login}" class="button get-started">Login</a>
-        </div>
-        
-        <div class="mobile-menu">
-          <div class="open-close">
-            <img
-              src="./images/menu.svg"
-              alt="Abrir"
-              class="open"
-              onclick="Menu.open()"
-            />
-            <img
-              src="./images/close.svg"
-              alt="fechar"
-              class="close"
-              onclick="Menu.close()"
-            />
-
-            <div class="logo-menu">
-              <img src="./images/logo.svg" alt="" />
-              <p>Monances</p>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1e3c72">
+    <title>Financial Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/mobile.css}">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 100px 0;
+            margin-bottom: 50px;
+        }
+        .feature-card {
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #1e3c72;
+        }
+        .auth-buttons .btn {
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+        .modal-content {
+            border-radius: 15px;
+        }
+        .form-control {
+            border-radius: 10px;
+            padding: 12px;
+        }
+        /* Mobile Navigation */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        .mobile-nav .nav-item {
+            text-align: center;
+            padding: 10px;
+        }
+        .mobile-nav .nav-link {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        .mobile-nav .nav-link i {
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+        @media (max-width: 768px) {
+            .mobile-nav {
+                display: flex;
+            }
+            body {
+                padding-bottom: 60px;
+            }
+        }
+        /* Ensure modals are above other content */
+        .modal {
+            z-index: 1050;
+        }
+        .modal-backdrop {
+            z-index: 1040;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Управляйте своими финансами с легкостью</h1>
+                    <p class="lead mb-4">Современная система для отслеживания расходов, планирования бюджета и достижения финансовых целей.</p>
+                    <div class="auth-buttons">
+                        <button class="btn btn-light me-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i class="fas fa-sign-in-alt me-2"></i>Войти
+                        </button>
+                        <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#registerModal">
+                            <i class="fas fa-user-plus me-2"></i>Регистрация
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img th:src="@{/images/dashboard.png}" alt="Financial Dashboard" class="img-fluid rounded-3">
+                </div>
             </div>
-          </div>
-          <div class="menu">
-            <div class="menu-open">
-              <div class="menu-items">
-                <ul>
-                  <li><a th:href="@{/}" onclick="Menu.close()">Home</a></li>
-                  <li><a href="#contact" onclick="Menu.close()">Contact</a></li>
-                  <li>
-                    <a
-                      th:href="@{/registration}"
-                      onclick="Menu.close()"
-                      >Registration</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      th:href="@{/login}"
-                      onclick="Menu.close()"
-                      >Login</a
-                    >
-                  </li>
-                </ul>
-              </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container mb-5">
+        <h2 class="text-center mb-5">Основные возможности</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card feature-card h-100 p-4">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h3 class="h5">Аналитика расходов</h3>
+                        <p>Детальная аналитика ваших расходов с визуализацией данных и отчетами.</p>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="col-md-4">
+                <div class="card feature-card h-100 p-4">
+                    <div class="card-body text-center">
+                        <i class="fas fa-bell feature-icon"></i>
+                        <h3 class="h5">Уведомления</h3>
+                        <p>Напоминания о платежах и важных финансовых событиях.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card h-100 p-4">
+                    <div class="card-body text-center">
+                        <i class="fas fa-tags feature-icon"></i>
+                        <h3 class="h5">Категоризация</h3>
+                        <p>Удобная категоризация транзакций для лучшего контроля расходов.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </nav>
+    </section>
 
-      <div class="header-content">
-        <div class="header-content-left">
-          <h1>Your best financial life starts here.</h1>
-          <p>
-            A smart, easy-to-use app that allows you to track your in-and-out
-            money.
-          </p>
-          <a th:href="@{/login}" class="button get-started">Go to Dashboard</a>
+    <!-- How It Works Section -->
+    <section class="container mb-5">
+        <h2 class="text-center mb-5">Как это работает</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-user-plus fa-lg"></i>
+                    </div>
+                    <h4 class="h5">1. Регистрация</h4>
+                    <p class="text-muted">Создайте аккаунт за несколько минут</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-wallet fa-lg"></i>
+                    </div>
+                    <h4 class="h5">2. Добавьте счета</h4>
+                    <p class="text-muted">Подключите все ваши банковские счета</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-chart-line fa-lg"></i>
+                    </div>
+                    <h4 class="h5">3. Отслеживайте</h4>
+                    <p class="text-muted">Анализируйте свои расходы и доходы</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-bullseye fa-lg"></i>
+                    </div>
+                    <h4 class="h5">4. Достигайте целей</h4>
+                    <p class="text-muted">Ставьте и достигайте финансовых целей</p>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <div class="header-content-right">
-          <img src="./images/team.svg" alt="Team image" />
+    <!-- Benefits Section -->
+    <section class="bg-light py-5 mb-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Преимущества системы</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-shield-alt text-primary fa-2x mb-3"></i>
+                            <h3 class="h5">Безопасность</h3>
+                            <p class="text-muted">Ваши данные надежно защищены с использованием современных технологий шифрования</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-mobile-alt text-primary fa-2x mb-3"></i>
+                            <h3 class="h5">Доступность</h3>
+                            <p class="text-muted">Управляйте финансами с любого устройства в любое время</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-chart-pie text-primary fa-2x mb-3"></i>
+                            <h3 class="h5">Аналитика</h3>
+                            <p class="text-muted">Детальная аналитика и отчеты для принятия финансовых решений</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </header>
-    <!--END OF HEADER-------------------- -->
+    </section>
 
-    <main id="preview">
-      <section class="app-preview container">
-        <div class="app-preview-left">
-          <img th:src="@{/images/laptop_preview.svg}" alt="App image" />
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5 class="mb-4">О системе</h5>
+                    <p class="text-muted">Современная система управления личными финансами, помогающая достигать финансовых целей и контролировать расходы.</p>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="mb-4">Контакты</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li class="mb-2"><i class="fas fa-envelope me-2"></i>support@financemanager.com</li>
+                        <li class="mb-2"><i class="fas fa-phone me-2"></i>+375 (29) 123-45-67</li>
+                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>Минск, Беларусь</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="mb-4">Мы в соцсетях</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-light"><i class="fab fa-facebook fa-2x"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-twitter fa-2x"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-instagram fa-2x"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-linkedin fa-2x"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 bg-secondary">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-muted">&copy; 2024 Financial Management System. Все права защищены.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-muted text-decoration-none me-3">Политика конфиденциальности</a>
+                    <a href="#" class="text-muted text-decoration-none">Условия использования</a>
+                </div>
+            </div>
         </div>
-
-        <div class="app-preview-right">
-          <h2 class="section-title">Spend smarter and save more</h2>
-          <p class="section-paragraph">
-            Say goodbye to spreadsheets with customizable budgets. Easily add
-            and update your Incomes and expenses.
-          </p>
-          <div class="get-started-line">
-            <a th:href="@{/login}" class="get-started">Get Started</a>
-            <div class="green-line"></div>
-          </div>
-        </div>
-      </section>
-      <!--END OF app-preview container SECTION-------------------- -->
-
-      <section class="track-your-spending container" id="track">
-        <div class="track-your-spending-left">
-          <h2 class="section-title">Track your spending</h2>
-          <p class="section-paragraph">
-            Reach your goals with custom budgets, monitoring your incomes and
-            expenses everyday, All for free.
-          </p>
-          <div class="get-started-line">
-            <a th:href="@{/login}" class="get-started">Get Started</a>
-            <div class="green-line"></div>
-          </div>
-        </div>
-
-        <div class="track-your-spending-right">
-          <img src="./images/idea.svg" alt="image" />
-        </div>
-      </section>
-      <!--END OF track-your-spending SECTION-------------------- -->
-
-      <section id="contact" class="get-in-touch container">
-        <div class="get-in-touch-content">
-          <div class="get-in-touch-left">
-            <h2 class="section-title">Get in touch with us.</h2>
-          </div>
-          <div class="get-in-touch-right">
-            <a
-              href="https://www.linkedin.com/in/vinicius-rodrigues-5897831b8/"
-              class="button get-started"
-              >Contact</a
-            >
-          </div>
-        </div>
-      </section>
-      <!--END OF get-in-touch SECTION-------------------- -->
-    </main>
-
-    <footer>
-      <div class="footer-container">
-        <div class="footer-card">
-          <h3>Our mission</h3>
-          <a href="./index.html">Home</a>
-          <a href="#preview">Preview</a>
-          <a href="#track">Track spending</a>
-          <a href="#contact">Contact</a>
-        </div>
-        <div class="footer-card">
-          <h3>About</h3>
-          <a href="" target="_blank">viniscode</a>
-          <a href="" target="_blank"
-            >Source code</a
-          >
-        </div>
-        <div class="footer-card">
-          <h3>Quick Links</h3>
-          <a href="./index.html">Home</a>
-          <a href="#preview">Preview</a>
-          <a href="#track">Track spending</a>
-          <a href="#contact">Contact</a>
-        </div>
-
-        <div class="footer-card">
-          <h3>Get in touch</h3>
-          <div class="social">
-            <a
-              href=""
-              target="_blank"
-              id="linkedin"
-              ><i data-feather="linkedin"></i
-            ></a>
-            <a href="" target="_blank"
-              ><i data-feather="github" id="git"></i
-            ></a>
-            <a
-              href=""
-              target="_blank"
-              id="insta"
-              ><i data-feather="instagram"></i
-            ></a>
-          </div>
-        </div>
-      </div>
     </footer>
-    <!--END OF FOOTER-------------------- -->
 
-    <!--LOADING SCREEN-->
-    <div class="loader-overlay">
-      <div class="loader"></div>  
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="loginModalLabel">Вход в систему</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/login}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Пароль</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Войти</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    
 
-    <script src="https://unpkg.com/scrollreveal"></script>
-    <script th:src="@{/scripts/scrscrollReveal.js}"></script>
-    <script th:src="@{/scripts/home.js}"></script>
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/register}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Имя</label>
+                            <input type="text" class="form-control" name="firstName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Фамилия</label>
+                            <input type="text" class="form-control" name="lastName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Пароль</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Подтверждение пароля</label>
+                            <input type="password" class="form-control" name="confirmPassword" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav">
+        <div class="container">
+            <div class="row">
+                <div class="col nav-item">
+                    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Войти
+                    </a>
+                </div>
+                <div class="col nav-item">
+                    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#registerModal">
+                        <i class="fas fa-user-plus"></i>
+                        Регистрация
+                    </a>
+                </div>
+                <div class="col nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-info-circle"></i>
+                        О системе
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      feather.replace();
+        // Removed touchend listener that might interfere with Bootstrap modals
+        /*
+        document.addEventListener('touchend', function(event) {
+            event.preventDefault();
+            event.target.click();
+        }, false);
+        */
+
+        // Handle mobile navigation active state
+        document.querySelectorAll('.mobile-nav .nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                document.querySelectorAll('.mobile-nav .nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
     </script>
-
-  <script>
-    // ==== LOADING SCREEN
-    let spinner = document.querySelector('.loader-overlay');
-
-    window.addEventListener('load', () => {
-      spinner.parentElement.removeChild(spinner);
-    })
-  </script>
-  </body>
+</body>
 </html>

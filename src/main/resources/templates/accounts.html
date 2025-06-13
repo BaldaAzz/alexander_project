@@ -3,98 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои счета</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Управление счетами</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/mobile.css}">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: #1e3c72;
+            background: linear-gradient(to right, #2a5298, #1e3c72);
+            color: white;
+            padding: 20px;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background: rgba(255,255,255,0.1);
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .account-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .account-card .card-body {
+            padding: 20px;
+        }
+        .account-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #1e3c72;
+        }
+        .account-balance {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+        .account-name {
+            font-size: 1.2rem;
+            color: #666;
+        }
+        .btn-add-account {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .btn-add-account:hover {
+            background: #2a5298;
+            color: white;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Боковая панель навигации -->
-            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
-            
-            <!-- Основной контент -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Мои счета</h1>
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>Финансы</h4>
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-sign-out-alt"></i> Выход
+                        </button>
+                    </form>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" th:href="@{/dashboard}">
+                        <i class="fas fa-home me-2"></i> Обзор
+                    </a>
+                    <a class="nav-link" th:href="@{/transactions}">
+                        <i class="fas fa-exchange-alt me-2"></i> Транзакции
+                    </a>
+                    <a class="nav-link" th:href="@{/categories}">
+                        <i class="fas fa-chart-pie me-2"></i> Категории
+                    </a>
+                    <a class="nav-link active" th:href="@{/accounts}">
+                        <i class="fas fa-wallet me-2"></i> Счета
+                    </a>
+                    <a class="nav-link" th:href="@{/settings}">
+                        <i class="fas fa-cog me-2"></i> Настройки
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <!-- Alerts -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${success}">Success message</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <span th:text="${error}">Error message</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Мои счета</h2>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAccountModal">
-                        <i class="fas fa-plus me-1"></i> Добавить счет
+                        <i class="fas fa-plus me-2"></i>Добавить счет
                     </button>
                 </div>
-                
-                <!-- Сообщения об успехе или ошибке -->
-                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-                    <span th:text="${successMessage}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <span th:text="${errorMessage}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                
-                <!-- Список счетов -->
-                <div class="row mt-4">
-                    <div th:each="account : ${accounts}" class="col-md-4 mb-4">
-                        <div class="card">
+
+                <!-- Accounts Grid -->
+                <div class="row">
+                    <div th:if="${#lists.isEmpty(accounts)}" class="col-12 text-center py-5">
+                        <i class="fas fa-wallet fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">У вас пока нет счетов</h4>
+                        <p class="text-muted">Добавьте свой первый счет, чтобы начать отслеживать финансы</p>
+                        <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+                            <i class="fas fa-plus me-2"></i>Добавить счет
+                        </button>
+                    </div>
+                    <div th:each="account : ${accounts}" class="col-md-6 col-lg-4 mb-4">
+                        <div class="card account-card">
                             <div class="card-body">
-                                <h5 class="card-title" th:text="${account.name}">Название счета</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">
-                                    Баланс: <span th:text="${#numbers.formatDecimal(account.balance, 1, 'WHITESPACE', 2, 'POINT')}">0.00</span> руб.
-                                </h6>
-                                <div class="d-flex justify-content-between mt-3">
-                                    <a th:href="@{'/accounts/' + ${account.id}}" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-info-circle me-1"></i> Детали
-                                    </a>
-                                    <form th:action="@{'/accounts/delete/' + ${account.id}}" method="post" 
-                                          onsubmit="return confirm('Вы уверены, что хотите удалить этот счет? Все связанные транзакции также будут удалены.')">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="fas fa-trash me-1"></i> Удалить
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h5 class="card-title mb-1" th:text="${account.name}">Название счета</h5>
+                                        <div class="account-balance" th:text="${account.balance + ' ' + account.currency}">
+                                            0.00 RUB
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-link text-muted" data-bs-toggle="dropdown">
+                                            <i class="fas fa-ellipsis-v"></i>
                                         </button>
-                                    </form>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="#" th:onclick="'editAccount(' + ${account.id} + ')'">
+                                                    <i class="fas fa-edit me-2"></i>Редактировать
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item text-danger" href="#" th:onclick="'deleteAccount(' + ${account.id} + ')'">
+                                                    <i class="fas fa-trash me-2"></i>Удалить
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Если счетов нет -->
-                    <div th:if="${#lists.isEmpty(accounts)}" class="col-12 text-center mt-5">
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i> У вас пока нет счетов. Создайте свой первый счет!
-                        </div>
-                    </div>
                 </div>
-            </main>
-        </div>
-    </div>
-    
-    <!-- Модальное окно для добавления счета -->
-    <div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addAccountModalLabel">Добавить новый счет</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form th:action="@{/accounts/create}" method="post">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="accountName" class="form-label">Название счета</label>
-                            <input type="text" class="form-control" id="accountName" name="name" required>
-                            <div class="form-text">Введите название для вашего нового счета</div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-primary">Создать счет</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script th:src="@{/js/script.js}"></script>
+
+    <!-- Add Account Modal -->
+    <div class="modal fade" id="addAccountModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить новый счет</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/accounts/add}" method="post">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Название счета</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="balance" class="form-label">Начальный баланс</label>
+                            <input type="number" class="form-control" id="balance" name="balance" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="currency" class="form-label">Валюта</label>
+                            <select class="form-select" id="currency" name="currency" required>
+                                <option value="BYN">BYN</option>
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="PLN">PLN</option>
+                            </select>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Создать</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Account Modal -->
+    <div class="modal fade" id="editAccountModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Изменить счет</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editAccountForm" method="post">
+                        <div class="mb-3">
+                            <label for="editName" class="form-label">Название счета</label>
+                            <input type="text" class="form-control" id="editName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editBalance" class="form-label">Баланс</label>
+                            <input type="number" class="form-control" id="editBalance" name="balance" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCurrency" class="form-label">Валюта</label>
+                            <select class="form-select" id="editCurrency" name="currency" required>
+                                <option value="BYN">BYN</option>
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="PLN">PLN</option>
+                            </select>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-hide alerts after 5 seconds
+        window.setTimeout(function() {
+            document.querySelectorAll('.alert').forEach(function(alert) {
+                new bootstrap.Alert(alert).close();
+            });
+        }, 5000);
+
+        function editAccount(id) {
+            // Set form action
+            document.getElementById('editAccountForm').action = '/accounts/edit/' + id;
+            
+            // Get account data and populate form
+            fetch('/accounts/' + id)
+                .then(response => response.json())
+                .then(account => {
+                    document.getElementById('editName').value = account.name;
+                    document.getElementById('editBalance').value = account.balance;
+                    document.getElementById('editCurrency').value = account.currency;
+                    
+                    // Show modal
+                    new bootstrap.Modal(document.getElementById('editAccountModal')).show();
+                });
+        }
+
+        function deleteAccount(id) {
+            if (confirm('Вы уверены, что хотите удалить этот счет?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/accounts/delete/' + id;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav fixed-bottom bg-light">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col">
+                    <a class="nav-link" th:href="@{/dashboard}">
+                        <i class="fas fa-home d-block mb-1"></i>
+                        <span class="d-block">Обзор</span>
+                    </a>
+                </div>
+                <div class="col">
+                    <a class="nav-link" th:href="@{/transactions}">
+                        <i class="fas fa-exchange-alt d-block mb-1"></i>
+                        <span class="d-block">Транзакции</span>
+                    </a>
+                </div>
+                <div class="col">
+                    <a class="nav-link" th:href="@{/categories}">
+                        <i class="fas fa-chart-pie d-block mb-1"></i>
+                        <span class="d-block">Категории</span>
+                    </a>
+                </div>
+                <div class="col">
+                    <a class="nav-link active" th:href="@{/accounts}">
+                        <i class="fas fa-wallet d-block mb-1"></i>
+                        <span class="d-block">Счета</span>
+                    </a>
+                </div>
+                 <div class="col">
+                    <a class="nav-link" th:href="@{/settings}">
+                        <i class="fas fa-cog d-block mb-1"></i>
+                        <span class="d-block">Настройки</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
 </body>
 </html> 

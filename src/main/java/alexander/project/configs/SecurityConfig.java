@@ -1,3 +1,4 @@
+/*
 package alexander.project.configs;
 
 import alexander.project.services.CustomUserDetailsService;
@@ -18,7 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfigExtra {
 
     private final CustomUserDetailsService userDetailsService;
 
@@ -73,3 +74,4 @@ public class SecurityConfig {
         };
     }
 }
+*/

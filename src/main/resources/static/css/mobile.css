@@ -1,0 +1,691 @@
+/* Мобильное меню */
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 400px;
+    height: 100vh;
+    background-color: var(--secondary-color);
+    box-shadow: -2px 0 10px rgba(0, 255, 255, 0.5);
+    z-index: 1001;
+    transition: right 0.3s ease;
+    padding: 20px;
+    border-left: 1px solid var(--border-color);
+}
+
+.mobile-menu.active {
+    right: 0;
+}
+
+.mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.mobile-menu-header span {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--primary-color);
+    text-shadow: 0 0 5px var(--primary-color);
+}
+
+.mobile-menu-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--light-text);
+    cursor: pointer;
+    padding: 5px;
+    transition: var(--transition);
+}
+
+.mobile-menu-close:hover {
+    color: var(--error-color);
+    transform: rotate(90deg);
+}
+
+.mobile-menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mobile-menu-link {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 0;
+    transition: var(--transition);
+    position: relative;
+}
+
+.mobile-menu-link:hover {
+    color: var(--primary-color);
+    padding-left: 10px;
+}
+
+/* Гамбургер меню */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1002;
+}
+
+.hamburger-line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary-color);
+    margin: 5px 0;
+    transition: var(--transition);
+}
+
+/* Затемнение фона при открытом меню */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Медиа запросы */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    .mobile-menu {
+        display: block;
+    }
+}
+
+@media (min-width: 769px) {
+    .mobile-menu {
+        display: none;
+    }
+}
+
+/* Анимация для гамбургер-меню */
+.hamburger.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+    background-color: var(--error-color);
+}
+
+.hamburger.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+    background-color: var(--error-color);
+}
+
+/* Медиа-запросы для мобильных устройств */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+    
+    .mobile-menu {
+        display: block;
+    }
+    
+    /* Увеличенные области для тач-интерфейса */
+    .btn, .form-control, .nav-link {
+        min-height: 44px;
+    }
+    
+    /* Оптимизация форм для мобильных устройств */
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-control {
+        font-size: 16px;
+    }
+    
+    /* Оптимизация карточек для мобильных устройств */
+    .card {
+        margin: 15px 0;
+    }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    /* Hide sidebar on mobile */
+    .sidebar {
+        display: none !important;
+    }
+
+    /* Adjust main content width */
+    .main-content {
+        width: 100% !important;
+        margin-left: 0 !important;
+        padding: 15px; /* Adjust padding */
+    }
+
+    /* Stack stat cards vertically */
+    .main-content .row.mb-4 > div {
+        margin-bottom: 15px;
+    }
+
+    .main-content .row.mb-4 > div:last-child {
+        margin-bottom: 0;
+    }
+
+    .main-content .row > div {
+        width: 100% !important; /* Ensure columns take full width */
+    }
+
+    /* Adjust card spacing */
+    .card {
+        margin-bottom: 15px;
+        border-radius: 10px; /* Slightly smaller border-radius for mobile cards */
+        box-shadow: 0 2px 4px rgba(0,0,0,.08); /* Softer shadow */
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 10px; /* Match general card radius */
+    }
+
+    /* Adjust padding in card body */
+    .card-body {
+        padding: 15px;
+    }
+
+    /* Adjust font sizes for better readability */
+    h2 {
+        font-size: 1.6rem;
+        margin-bottom: 1rem; /* Adjust margin below section titles */
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.4rem;
+    }
+
+    .card-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .transaction-amount {
+        font-size: 1em;
+        font-weight: 700; /* Make amount bolder */
+    }
+
+    .transaction-category,
+    .transaction-date,
+    .text-muted {
+        font-size: 0.85rem; /* Slightly increase font size */
+    }
+
+    /* Adjust table/list layout for transactions and accounts */
+    .list-group-item {
+        padding: 10px 12px; /* Adjust padding for list items, making it more compact */
+        margin-bottom: 8px; /* Keep space between list items */
+        border: 1px solid rgba(0,0,0,.08); /* Add a subtle border */
+        border-radius: 8px; /* Add border radius to list items */
+        background-color: #fff; /* Ensure white background for list items */
+        box-shadow: 0 1px 3px rgba(0,0,0,.05); /* Subtle shadow for list items */
+    }
+
+    .list-group-flush > .list-group-item {
+         border-width: 1px; /* Ensure border is visible even with flush */
+         border-right-width: 1px; /* Fix potential flush border issue */
+         border-left-width: 1px; /* Fix potential flush border issue */
+         border-radius: 8px; /* Apply border radius */
+    }
+
+     .list-group-flush > .list-group-item:first-child {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .list-group-flush > .list-group-item:last-child {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .list-group-item .d-flex {
+        flex-direction: column; /* Stack transaction details vertically */
+        align-items: flex-start; /* Align text to the start */
+        gap: 3px; /* Reduce space between stacked blocks */
+    }
+
+     .list-group-item .d-flex > div:first-child {
+        flex-grow: 1; /* Allow description/category area to take available space */
+        margin-right: 0; /* Remove margin */
+     }
+
+    .transaction-item .text-end {
+        text-align: left !important; /* Align amount to the left below details */
+        width: 100%; /* Ensure amount takes full width */
+        margin-top: 5px; /* Keep space above amount */
+    }
+
+    .transaction-item .dropdown {
+         align-self: flex-end; /* Position dropdown to the right */
+         margin-top: -30px; /* Adjust margin to position next to amount */
+    }
+
+    /* Adjust transaction list item details */
+    .transaction-item h6 {
+        margin-bottom: 0; /* Remove bottom margin from description */
+        font-size: 1rem; /* Main description font size */
+    }
+
+    .transaction-item .transaction-category,
+    .transaction-item .transaction-date {
+        font-size: 0.75rem; /* Further reduce font size for details */
+        color: #999; /* Lighten color */
+    }
+
+    /* Add more space between transaction items */
+    .transaction-list .list-group-item {
+        margin-bottom: 10px; /* Increased margin */
+    }
+
+    /* Add padding at the bottom of the main content to not be hidden by fixed nav */
+    .main-content {
+        padding-bottom: 70px; /* Add padding to accommodate fixed bottom nav */
+    }
+
+    /* Hero Section (existing mobile styles) */
+    .hero-section {
+        padding: 60px 0;
+        text-align: center;
+    }
+
+    .hero-section .row {
+        flex-direction: column-reverse;
+    }
+
+    .hero-section .col-lg-6 {
+        width: 100% !important; /* Ensure columns take full width */
+    }
+
+    .hero-section img {
+        margin-bottom: 30px;
+        max-width: 80%; /* Adjust image size */
+        height: auto;
+        margin-left: auto;
+        margin-right: auto; /* Center image */
+        display: block; /* Ensure image is a block element for centering */
+    }
+
+    .hero-section h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .hero-section .lead {
+        font-size: 1rem;
+    }
+
+    .auth-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+        align-items: center; /* Center buttons */
+    }
+
+    .auth-buttons .btn {
+        width: 80%; /* Adjust button width */
+        max-width: 300px; /* Limit max width */
+        margin: 0 !important;
+    }
+
+    /* Features Section (existing mobile styles) */
+    .feature-card {
+        margin-bottom: 20px;
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+    }
+
+    /* How It Works Section (existing mobile styles) */
+    .rounded-circle {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    .rounded-circle i {
+        font-size: 1.2rem !important;
+    }
+
+    /* Benefits Section (existing mobile styles) */
+    .card {
+        margin-bottom: 20px;
+    }
+
+    /* Footer (existing mobile styles) */
+    footer {
+        text-align: center;
+    }
+
+    footer .col-lg-4 {
+        margin-bottom: 30px;
+    }
+
+    footer .d-flex {
+        justify-content: center;
+    }
+
+    footer .text-md-end {
+        margin-top: 20px;
+    }
+
+    /* Modals (existing mobile styles) */
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+    }
+
+    .form-control {
+        padding: 10px;
+    }
+
+    /* General Spacing (existing mobile styles) */
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    section {
+        margin-bottom: 30px !important;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    /* Navigation (existing mobile styles) */
+    .navbar {
+        padding: 10px 0;
+    }
+
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    /* Social Icons (existing mobile styles) */
+    .fa-2x {
+        font-size: 1.5em;
+    }
+
+    /* Text Adjustments (existing mobile styles) */
+    .text-muted {
+        font-size: 0.9rem;
+    }
+
+    /* Spacing Utilities (existing mobile styles) */
+    .mb-4 {
+        margin-bottom: 1rem !important;
+    }
+
+    .mb-5 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .py-5 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+
+    /* Grid Adjustments (existing mobile styles) */
+    .row {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+
+    .col-md-3, .col-md-4 {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    /* Button Adjustments (existing mobile styles) */
+    .btn {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+
+    /* Image Adjustments (existing mobile styles) */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* Additional breakpoint for very small devices (existing mobile styles) */
+@media (max-width: 480px) {
+    .hero-section {
+        padding: 40px 0;
+    }
+
+    .hero-section h1 {
+        font-size: 1.8rem;
+    }
+
+    .feature-icon {
+        font-size: 1.8rem;
+    }
+
+    .rounded-circle {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    footer .fa-2x {
+        font-size: 1.3em;
+    }
+
+    .modal-dialog {
+        margin: 5px;
+    }
+}
+
+/* Transactions Page Specific Styles (existing) */
+/* ... existing transaction styles ... */
+
+/* Categories Page Specific Styles */
+.main-content .d-flex.justify-content-between.align-items-center.mb-4 {
+    flex-direction: column; /* Stack header items vertically */
+    align-items: flex-start !important; /* Align header items to the start */
+    gap: 15px; /* Add space between stacked items */
+}
+
+.main-content .d-flex.justify-content-between.align-items-center.mb-4 .search-box {
+     width: 100%; /* Make search box full width */
+     max-width: none; /* Remove max width constraint */
+}
+
+.main-content .d-flex.justify-content-between.align-items-center.mb-4 > .d-flex.gap-2 {
+     flex-direction: column; /* Stack search and add button vertically */
+     width: 100%; /* Make container full width */
+     gap: 10px; /* Add space between search and add button */
+}
+
+.main-content .d-flex.justify-content-between.align-items-center.mb-4 .btn-primary {
+    width: 100%; /* Make add button full width */
+}
+
+.categories-page .filter-section .row > div {
+    width: 100% !important; /* Stack filter dropdowns vertically */
+    margin-bottom: 15px; /* Add space between filter dropdowns */
+}
+
+.categories-page .filter-section .row > div:last-child {
+    margin-bottom: 0; /* Remove bottom margin for the last filter */
+}
+
+.categories-page .category-item.col-md-6 {
+    width: 100% !important; /* Make category cards full width */
+    flex: none; /* Remove flex property to avoid layout issues */
+}
+
+.categories-page .category-card {
+    padding: 15px; /* Adjust padding inside category card */
+}
+
+.categories-page .category-icon {
+    width: 35px; /* Slightly smaller icon */
+    height: 35px;
+    margin-right: 10px; /* Adjust margin */
+}
+
+.categories-page .category-stats {
+    font-size: 0.8rem; /* Slightly smaller stats font */
+}
+
+/* Ensure buttons inside category card are full width if stacked (if any) */
+.categories-page .category-card .d-flex > .btn {
+     width: auto; /* Revert button width if not stacked */
+}
+
+.categories-page .group-header {
+    margin-bottom: 10px; /* Adjust margin below group headers */
+}
+
+/* Accounts Page Specific Styles */
+@media (max-width: 768px) {
+    .account-card {
+        /* Make account cards full width and add some bottom margin */
+        width: 100% !important;
+        margin-bottom: 15px;
+    }
+
+    .account-card .card-body {
+        /* Adjust padding inside account card */
+        padding: 15px;
+    }
+
+    .account-card .d-flex.justify-content-between.align-items-start.mb-3 {
+        /* Stack account details vertically */
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 5px; /* Space between stacked details */
+    }
+
+    .account-balance {
+        /* Adjust font size for balance */
+        font-size: 1.3rem;
+    }
+
+    .account-name {
+        /* Adjust font size for account name */
+        font-size: 1rem;
+        color: #555; /* Slightly darker text for better contrast */
+    }
+
+    .account-card .dropdown {
+         /* Position dropdown appropriately when details are stacked */
+         align-self: flex-end;
+         margin-top: -30px; /* Adjust based on layout */
+    }
+
+     .btn-add-account {
+        width: 100%; /* Make add account button full width */
+        margin-bottom: 15px; /* Adjust margin */
+     }
+
+}
+
+/* Settings Page Specific Styles */
+@media (max-width: 768px) {
+    .settings-section {
+        margin-bottom: 20px; /* Adjust spacing between settings sections */
+    }
+
+    .settings-section .card {
+         border-radius: 10px; /* Slightly smaller border-radius for mobile cards */
+         box-shadow: 0 2px 4px rgba(0,0,0,.08); /* Softer shadow */
+    }
+
+    .settings-section .card-header {
+        padding: 10px 15px; /* Adjust padding in card header */
+    }
+
+    .settings-section .card-body {
+        padding: 15px; /* Adjust padding in card body */
+    }
+
+    .settings-icon {
+        width: 35px; /* Slightly smaller icon */
+        height: 35px;
+        margin-right: 10px; /* Adjust margin */
+    }
+
+    .settings-section h5 {
+        font-size: 1.2rem; /* Adjust font size for section titles */
+    }
+
+    .settings-section form .row > div {
+        width: 100% !important; /* Stack form columns vertically */
+        margin-bottom: 15px; /* Add space between stacked form groups */
+    }
+
+    .settings-section form .row > div:last-child {
+         margin-bottom: 0; /* Remove bottom margin for the last item in a row */
+    }
+
+     .settings-section .form-label {
+        font-size: 0.9rem; /* Adjust font size for labels */
+     }
+
+    .settings-section .form-control, .settings-section .form-select {
+        font-size: 1rem; /* Adjust font size for inputs and selects */
+        padding: 8px 12px; /* Adjust padding */
+    }
+
+     .settings-section .btn-primary {
+        width: 100%; /* Make primary button full width */
+     }
+
+     .settings-section .form-text {
+        font-size: 0.85rem; /* Adjust font size for helper text */
+     }
+}
+
+/* Mobile Navigation (hide on desktop) */
+@media (min-width: 769px) {
+    .mobile-nav {
+        display: none;
+    }
+} 

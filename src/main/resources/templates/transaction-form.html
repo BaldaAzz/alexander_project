@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${transaction.id == null ? 'Новая транзакция' : 'Редактирование транзакции'}"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 th:text="${transaction.id == null ? 'Новая транзакция' : 'Редактирование транзакции'}"></h1>
+        <form th:action="@{${transaction.id == null ? '/transactions/new' : '/transactions/' + transaction.id + '/edit'}}" method="post">
+            <div class="mb-3">
+                <label for="amount" class="form-label">Сумма</label>
+                <input type="number" step="0.01" class="form-control" id="amount" name="amount" th:value="${transaction.amount}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Описание</label>
+                <input type="text" class="form-control" id="description" name="description" th:value="${transaction.description}" required>
+            </div>
+            <div class="mb-3">
+                <label for="date" class="form-label">Дата</label>
+                <input type="date" class="form-control" id="date" name="date" th:value="${#temporals.format(transaction.date, 'yyyy-MM-dd')}" required>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Категория</label>
+                <select class="form-select" id="category" name="categoryId" required>
+                    <option value="">Выберите категорию</option>
+                    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}" th:selected="${transaction.category != null && transaction.category.id == cat.id}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="tags" class="form-label">Теги</label>
+                <select class="form-select" id="tags" name="tagIds" multiple>
+                    <option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name}" th:selected="${transaction.tags != null && transaction.tags.contains(tag)}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="isRecurring" class="form-label">Повторяющаяся транзакция</label>
+                <input type="checkbox" class="form-check-input" id="isRecurring" name="isRecurring" th:checked="${transaction.recurring}">
+            </div>
+            <div class="mb-3" th:if="${transaction.recurring}">
+                <label for="recurringPeriod" class="form-label">Период повторения</label>
+                <select class="form-select" id="recurringPeriod" name="recurringPeriod">
+                    <option value="DAILY">Ежедневно</option>
+                    <option value="WEEKLY">Еженедельно</option>
+                    <option value="MONTHLY">Ежемесячно</option>
+                    <option value="YEARLY">Ежегодно</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="reminder" class="form-label">Напоминание</label>
+                <input type="checkbox" class="form-check-input" id="reminder" name="reminder" th:checked="${transaction.reminder != null}">
+            </div>
+            <div class="mb-3" th:if="${transaction.reminder != null}">
+                <label for="reminderDate" class="form-label">Дата напоминания</label>
+                <input type="datetime-local" class="form-control" id="reminderDate" name="reminderDate" th:value="${#temporals.format(transaction.reminder.date, 'yyyy-MM-dd''T''HH:mm')}">
+            </div>
+            <div class="mb-3">
+                <label for="attachments" class="form-label">Вложения</label>
+                <input type="file" class="form-control" id="attachments" name="attachments" multiple>
+            </div>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a th:href="@{/transactions}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

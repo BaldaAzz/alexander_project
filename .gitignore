@@ -31,3 +31,16 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Application Specific ###
+*.log
+app.log
+query
+!REPORT/
+.env
+application-local.properties
+application-dev.properties
+application-prod.properties
+*.properties.bak
+*.yml.bak
+*.yaml.bak

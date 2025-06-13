@@ -1,125 +1,82 @@
 package alexander.project.controllers;
 
 import alexander.project.models.Account;
-import alexander.project.models.Transaction;
+import alexander.project.models.User;
 import alexander.project.services.AccountService;
-import alexander.project.services.TransactionService;
-import alexander.project.services.AuthService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/accounts")
+@RequiredArgsConstructor
 public class AccountController {
 
     private final AccountService accountService;
-    private final TransactionService transactionService;
-    private final AuthService authService;
 
-    /**
-     * Проверка аутентификации
-     */
-    private String checkAuth() {
-        if (!authService.isAuthenticated()) {
-            return "redirect:/";
-        }
-        return null;
-    }
-
-    /**
-     * Отображение списка счетов
-     */
     @GetMapping
-    public String accounts(Model model, HttpServletRequest request) {
-        // Проверяем аутентификацию
-        String redirect = checkAuth();
-        if (redirect != null) {
-            return redirect;
-        }
-        
-        List<Account> accounts = accountService.getAllAccounts();
-        model.addAttribute("accounts", accounts);
-        model.addAttribute("account", new Account()); // для формы создания нового счета
-        
-        // Добавляем HttpServletRequest в модель
-        model.addAttribute("request", request);
-        model.addAttribute("currentPath", request.getRequestURI());
-        
+    public String accountsPage(@AuthenticationPrincipal User user, Model model) {
+        model.addAttribute("accounts", accountService.findByUser(user));
+        model.addAttribute("user", user);
         return "accounts";
     }
 
-    /**
-     * Создание нового счета
-     */
-    @PostMapping("/create")
-    public String createAccount(@RequestParam String name, RedirectAttributes redirectAttributes) {
-        // Проверяем аутентификацию
-        String redirect = checkAuth();
-        if (redirect != null) {
-            return redirect;
-        }
-        
+    @PostMapping("/add")
+    public String addAccount(@AuthenticationPrincipal User user,
+                           @RequestParam String name,
+                           @RequestParam BigDecimal balance,
+                           @RequestParam String currency,
+                           RedirectAttributes redirectAttributes) {
         try {
-            accountService.createAccount(name);
-            redirectAttributes.addFlashAttribute("successMessage", "Счет успешно создан");
+            Account account = new Account();
+            account.setName(name);
+            account.setBalance(balance);
+            account.setCurrency(currency);
+            account.setUser(user);
+            
+            accountService.save(account);
+            redirectAttributes.addFlashAttribute("success", "Счет успешно создан");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Ошибка создания счета: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Ошибка при создании счета: " + e.getMessage());
         }
         return "redirect:/accounts";
     }
 
-    /**
-     * Удаление счета
-     */
+    @PostMapping("/edit/{id}")
+    public String editAccount(@PathVariable Long id,
+                            @RequestParam String name,
+                            @RequestParam BigDecimal balance,
+                            @RequestParam String currency,
+                            RedirectAttributes redirectAttributes) {
+        try {
+            Account account = accountService.findById(id);
+            if (account != null) {
+                account.setName(name);
+                account.setBalance(balance);
+                account.setCurrency(currency);
+                
+                accountService.save(account);
+                redirectAttributes.addFlashAttribute("success", "Счет успешно обновлен");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Ошибка при обновлении счета: " + e.getMessage());
+        }
+        return "redirect:/accounts";
+    }
+
     @PostMapping("/delete/{id}")
     public String deleteAccount(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        // Проверяем аутентификацию
-        String redirect = checkAuth();
-        if (redirect != null) {
-            return redirect;
-        }
-        
         try {
-            accountService.deleteAccount(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Счет успешно удален");
+            accountService.deleteById(id);
+            redirectAttributes.addFlashAttribute("success", "Счет успешно удален");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Ошибка удаления счета: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Ошибка при удалении счета: " + e.getMessage());
         }
         return "redirect:/accounts";
-    }
-
-    /**
-     * Получение деталей счета
-     */
-    @GetMapping("/{id}")
-    public String accountDetails(@PathVariable Long id, Model model, HttpServletRequest request) {
-        // Проверяем аутентификацию
-        String redirect = checkAuth();
-        if (redirect != null) {
-            return redirect;
-        }
-        
-        Account account = accountService.getAccountById(id);
-        if (account == null) {
-            return "redirect:/accounts";
-        }
-        
-        // Получаем транзакции для этого счета
-        List<Transaction> transactions = transactionService.getTransactionsByAccount(account);
-        model.addAttribute("account", account);
-        model.addAttribute("transactions", transactions);
-        
-        // Добавляем HttpServletRequest в модель
-        model.addAttribute("request", request);
-        model.addAttribute("currentPath", request.getRequestURI());
-        
-        return "account-details";
     }
 } 

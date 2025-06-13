@@ -10,6 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,8 +42,8 @@ public class AuthController {
     /**
      * Контроллер для отображения страницы регистрации
      */
-    @GetMapping("/registration")
-    public String registration(Model model, HttpServletRequest request) {
+    @GetMapping("/register")
+    public String register(Model model, HttpServletRequest request) {
         // Если пользователь уже авторизован, перенаправляем на главную
         if (authService.isAuthenticated()) {
             return "redirect:/";
@@ -51,20 +55,27 @@ public class AuthController {
         model.addAttribute("request", request);
         model.addAttribute("currentPath", request.getRequestURI());
         
-        return "registration";
+        return "register";
     }
     
     /**
      * Обработка формы регистрации
      */
-    @PostMapping("/registration")
-    public String createUser(User user, RedirectAttributes redirectAttributes) {
-        if (!userService.createUser(user)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Пользователь с таким email уже существует");
-            return "redirect:/registration";
+    @PostMapping("/register")
+    public String registerUser(@Valid @ModelAttribute("user") User user,
+                             BindingResult result,
+                             RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            return "redirect:/?error=registration";
         }
-        
-        redirectAttributes.addFlashAttribute("successMessage", "Пользователь успешно зарегистрирован");
-        return "redirect:/login";
+
+        try {
+            userService.registerNewUser(user);
+            redirectAttributes.addFlashAttribute("success", "Registration successful! Please login.");
+            return "redirect:/";
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/?error=registration";
+        }
     }
 } 

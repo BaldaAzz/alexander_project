@@ -1,0 +1,102 @@
+/* Стили для графиков и диаграмм */
+.chart-container {
+    background: var(--light-background);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    animation: chartFadeIn 0.5s ease-out;
+}
+
+.chart-title {
+    font-size: 18px;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-md);
+    text-shadow: 0 0 5px var(--primary-color);
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Стили для круговой диаграммы */
+.pie-chart {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+/* Стили для линейного графика */
+.line-chart {
+    width: 100%;
+    height: 100%;
+}
+
+/* Стили для легенды */
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    color: var(--text-color);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    border: 1px solid var(--border-color);
+}
+
+/* Анимации для графиков */
+@keyframes chartFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Стили для интерактивных элементов */
+.chart-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: var(--primary-color);
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 1000;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+}
+
+/* Стили для мобильных устройств */
+@media (max-width: 768px) {
+    .chart-wrapper {
+        height: 200px;
+    }
+    
+    .pie-chart {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .chart-legend {
+        justify-content: center;
+    }
+} 

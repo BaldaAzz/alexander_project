@@ -163,7 +163,7 @@ const Chart = {
         tooltips: {
           callbacks: {
             label: function(tooltipItem, data) {
-              return data.labels[tooltipItem.index] + ': ₽' + data.datasets[0].data[tooltipItem.index].toFixed(2);
+              return data.labels[tooltipItem.index] + ': Br' + data.datasets[0].data[tooltipItem.index].toFixed(2);
             }
           }
         }
